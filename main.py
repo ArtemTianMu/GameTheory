@@ -50,7 +50,7 @@ def gurvits_criteria(payment_matrix, lmbd):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = np.max(payment_matrix[i]) * lmbd + np.min(payment_matrix[i]) * (1.0 - lmbd)
-
+        # print(f"{(i+1)} = {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
 
     return strategy[0]
@@ -60,7 +60,7 @@ def servig_criteria(risk_matr):
     index_dict = {}
     for i in range(0, risk_matr.shape[0]):
         index_dict[i] = np.max(risk_matr[i])
-
+        #print(f"{i + 1} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
 
     return strategy[0]
@@ -90,7 +90,7 @@ def bayes(payment_matrix, probabilities):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = np.sum(payment_matrix[i] * probabilities)
-
+        print(f"{1+i} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -99,7 +99,7 @@ def bayes_risk(risk_matrix, probabilities):
     index_dict = {}
     for i in range(0, risk_matrix.shape[0]):
         index_dict[i] = np.sum(risk_matrix[i] * probabilities)
-
+        #print(f"{i} : {index_dict[i].round(3)}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -108,7 +108,7 @@ def hodzha_lemana(payment_matrix, probabilities, mu):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = mu * np.sum(payment_matrix[i] * probabilities) + (1.0 - mu) * np.min(payment_matrix[i])
-
+        print(f"{i} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -117,7 +117,7 @@ def hodzha_lemana_risk(risk_matr, probabilities, mu):
     index_dict = {}
     for i in range(0, risk_matr.shape[0]):
         index_dict[i] = mu * np.sum(risk_matr[i] * probabilities) + (1.0 - mu) * np.max(risk_matr[i])
-
+        #print(f"{i} : {index_dict[i].round(3)}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -126,32 +126,49 @@ def geimer(payment_matrix, probabilities):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = np.min(payment_matrix[i] * probabilities)
-
+        #print(f"{i} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
     return [strategy[0]]
 
 
 def main():
-    lmbd = mu = 0.6
+
+    lmbd = float(input("Введіть значення параметру lambda: "))
+    mu = float(input("Введіть значення параметру mu: "))
     strategy = {0: 0, 1: 0, 2: 0, 3: 0}
     payment_matrix = read_csv()[0]
     probabilities = read_csv()[1][0]
     risk_matrix(payment_matrix)
+    print('\nВ умовах невизначеності: \n')
+    print('Критерій Вальда: стратегія № '+str(criteria_vald(payment_matrix)+1))
     strategy[criteria_vald(payment_matrix)] += 1
-    strategy[criteria_optimism(payment_matrix)] += 1
-    strategy[criteria_pess(payment_matrix)] += 1
-    strategy[gurvits_criteria(payment_matrix, lmbd)] += 1
-    strategy[servig_criteria(risk_matrix(payment_matrix))] += 1
-    print("With uncertainty: ")
-    print(strategy)
-    ############################
-    strategy = {0: 0, 1: 0, 2: 0, 3: 0}
 
-    strategy[bayes(payment_matrix, probabilities)[0]] += 1
+    print('Критерій оптимізму: стратегія № ' + str(criteria_optimism(payment_matrix)+1))
+    strategy[criteria_optimism(payment_matrix)] += 1
+
+    print('Критерій песимізму: стратегія № ' + str(criteria_pess(payment_matrix)+1))
+    strategy[criteria_pess(payment_matrix)] += 1
+
+    print('Критерій Гурвіца: стратегія № ' + str(gurvits_criteria(payment_matrix, lmbd)+1))
+    strategy[gurvits_criteria(payment_matrix, lmbd)] += 1
+
+    print('Критерій Севіджа: стратегія № ' + str(servig_criteria(risk_matrix(payment_matrix))+1))
+    strategy[servig_criteria(risk_matrix(payment_matrix))] += 1
+
+    for i in strategy:
+        print(f'Стратегія № {i+1} була визначена разів: {strategy[i]}')
+
+    ############################################################
+    print("\nВ умовах ризику:\n")
+    strategy = {0: 0, 1: 0, 2: 0, 3: 0}
+    print('Критерій Байєса: стратегія № '+str(bayes_risk(risk_matrix(payment_matrix), probabilities)[0]+1))
     strategy[bayes_risk(risk_matrix(payment_matrix), probabilities)[0]] += 1
-    strategy[hodzha_lemana(payment_matrix, probabilities, mu)[0]] += 1
+    print('Критерій Ходжа-Лемана: стратегія № '+str(hodzha_lemana_risk(risk_matrix(payment_matrix), probabilities, mu)[0]+1))
     strategy[hodzha_lemana_risk(risk_matrix(payment_matrix), probabilities, mu)[0]] += 1
+    print('Критерій Гермейєра: стратегія № '+str(geimer(payment_matrix, probabilities)[0]+1))
     strategy[geimer(payment_matrix, probabilities)[0]] += 1
-    print("With risk: ")
-    print(strategy)
+    for i in strategy:
+        print(f'Стратегія № {i+1} була визначена разів: {strategy[i]}')
+
+
 main()
