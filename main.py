@@ -1,6 +1,4 @@
-import numpy
 import csv
-
 import numpy as np
 
 
@@ -50,7 +48,6 @@ def gurvits_criteria(payment_matrix, lmbd):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = np.max(payment_matrix[i]) * lmbd + np.min(payment_matrix[i]) * (1.0 - lmbd)
-        # print(f"{(i+1)} = {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
 
     return strategy[0]
@@ -60,7 +57,6 @@ def servig_criteria(risk_matr):
     index_dict = {}
     for i in range(0, risk_matr.shape[0]):
         index_dict[i] = np.max(risk_matr[i])
-        #print(f"{i + 1} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
 
     return strategy[0]
@@ -90,7 +86,6 @@ def bayes(payment_matrix, probabilities):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = np.sum(payment_matrix[i] * probabilities)
-        print(f"{1+i} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -99,7 +94,6 @@ def bayes_risk(risk_matrix, probabilities):
     index_dict = {}
     for i in range(0, risk_matrix.shape[0]):
         index_dict[i] = np.sum(risk_matrix[i] * probabilities)
-        #print(f"{i} : {index_dict[i].round(3)}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -108,7 +102,6 @@ def hodzha_lemana(payment_matrix, probabilities, mu):
     index_dict = {}
     for i in range(0, payment_matrix.shape[0]):
         index_dict[i] = mu * np.sum(payment_matrix[i] * probabilities) + (1.0 - mu) * np.min(payment_matrix[i])
-        print(f"{i} : {index_dict[i]}")
     strategy = [key for key, value in index_dict.items() if value == max(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
@@ -117,7 +110,6 @@ def hodzha_lemana_risk(risk_matr, probabilities, mu):
     index_dict = {}
     for i in range(0, risk_matr.shape[0]):
         index_dict[i] = mu * np.sum(risk_matr[i] * probabilities) + (1.0 - mu) * np.max(risk_matr[i])
-        #print(f"{i} : {index_dict[i].round(3)}")
     strategy = [key for key, value in index_dict.items() if value == min(index_dict.values())]
     return [strategy[0], index_dict[strategy[0]]]
 
