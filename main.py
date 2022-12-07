@@ -142,7 +142,7 @@ def main():
     strategy[criteria_pess(payment_matrix)] += 1
     strategy[gurvits_criteria(payment_matrix, lmbd)] += 1
     strategy[servig_criteria(risk_matrix(payment_matrix))] += 1
-
+    print("With uncertainty: ")
     print(strategy)
     ############################
     strategy = {0: 0, 1: 0, 2: 0, 3: 0}
@@ -152,6 +152,6 @@ def main():
     strategy[hodzha_lemana(payment_matrix, probabilities, mu)[0]] += 1
     strategy[hodzha_lemana_risk(risk_matrix(payment_matrix), probabilities, mu)[0]] += 1
     strategy[geimer(payment_matrix, probabilities)[0]] += 1
+    print("With risk: ")
     print(strategy)
-
 main()
