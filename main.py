@@ -162,5 +162,10 @@ def main():
     for i in strategy:
         print(f'Стратегія № {i+1} була визначена разів: {strategy[i]}')
 
+    print(f'Максимальний середній дохід за Байєсом: {round(bayes(payment_matrix, probabilities)[1],3)}')
+    print(f'Мінімальний середній збиток за Байєсом: {round(bayes_risk(risk_matrix(payment_matrix), probabilities)[1],3)}')
+    print(f'Максимальний середній дохід за Ходжа-Леманом: {round(hodzha_lemana(payment_matrix, probabilities,mu)[1],3)}')
+    print(f'Мінімальний середній збиток за Ходжа-Леманом: {round(hodzha_lemana_risk(risk_matrix(payment_matrix), probabilities,mu)[1],3)}')
+
 
 main()
